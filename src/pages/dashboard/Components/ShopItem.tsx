@@ -1,7 +1,18 @@
 import { Badge, IconButton } from '@material-tailwind/react'
 import { IShopItem } from '@/utils/types'
 
-const ShopItem = ({ name, desc, count, purchased }: IShopItem) => {
+interface IProps extends IShopItem {
+    handleDelete: (id: number | string) => unknown
+}
+
+const ShopItem = ({
+    id,
+    name,
+    desc,
+    count,
+    purchased,
+    handleDelete
+}: IProps) => {
     return (
         <div
             className={`${
@@ -41,7 +52,11 @@ const ShopItem = ({ name, desc, count, purchased }: IShopItem) => {
                 <IconButton variant="text" className="rounded-full">
                     <div className="material-icons-outlined">edit</div>
                 </IconButton>
-                <IconButton variant="text" className="rounded-full">
+                <IconButton
+                    variant="text"
+                    className="rounded-full"
+                    onClick={() => handleDelete(id)}
+                >
                     <div className="material-icons-outlined">delete</div>
                 </IconButton>
             </div>

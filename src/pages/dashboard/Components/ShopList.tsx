@@ -4,22 +4,31 @@ import ShopItem from './ShopItem'
 
 interface IShopList {
     items: IShopItem[]
+    handleOpen: () => unknown
+    handleDelete: (id: number | string) => unknown
 }
 
-const ShopList = ({ items }: IShopList) => (
+const ShopList = ({ items, handleOpen, handleDelete }: IShopList) => (
     <div className="mt-[35px] w-full">
         <div className="mx-[164px]">
             <div className="flex items-end justify-between mb-[11px]">
                 <div className="text-[18px] font-semibold leading-6">
                     Your Items
                 </div>
-                <Button className="bg-[#1871E8] rounded-1 capitalize text-[14px] font-semibold leading-5 px-[15px] py-[8px]">
+                <Button
+                    className="bg-[#1871E8] rounded-1 capitalize text-[14px] font-semibold leading-5 px-[15px] py-[8px]"
+                    onClick={handleOpen}
+                >
                     Add Item
                 </Button>
             </div>
             <div className="flex flex-col gap-3">
                 {items.map((item, key) => (
-                    <ShopItem {...item} key={key.toString()} />
+                    <ShopItem
+                        handleDelete={handleDelete}
+                        {...item}
+                        key={key.toString()}
+                    />
                 ))}
             </div>
         </div>
