@@ -38,6 +38,25 @@ const Dashboard = () => {
         console.log('delete: ', deleteId)
     }
 
+    const handleEdit = (id: number | string) => {
+        console.log('edit: ', id)
+        setDefaultValue(items.find((el) => el.id === id))
+        setIsEdit(true)
+        setOpenDrawer(true)
+    }
+
+    const handleChecked = (id: number | string) => {
+        setItems((el) => {
+            return el.map((item) => {
+                if (item.id === id) {
+                    return { ...item, purchased: !item.purchased }
+                } else {
+                    return item
+                }
+            })
+        })
+    }
+
     return (
         <div className="flex flex-col items-center justify-center">
             <Header />
@@ -45,9 +64,19 @@ const Dashboard = () => {
                 <ShopList
                     items={items}
                     handleOpen={() => {
-                        setIsEdit(false), setOpenDrawer(true)
+                        setDefaultValue({
+                            id: -1,
+                            name: '',
+                            desc: '',
+                            count: 1,
+                            purchased: false
+                        }),
+                            setIsEdit(false),
+                            setOpenDrawer(true)
                     }}
                     handleDelete={handleModal}
+                    handleEdit={handleEdit}
+                    handleChecked={handleChecked}
                 />
             ) : (
                 <Empty />

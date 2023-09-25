@@ -6,9 +6,17 @@ interface IShopList {
     items: IShopItem[]
     handleOpen: () => unknown
     handleDelete: (id: number | string) => unknown
+    handleEdit: (id: number | string) => unknown
+    handleChecked: (id: number | string) => unknown
 }
 
-const ShopList = ({ items, handleOpen, handleDelete }: IShopList) => (
+const ShopList = ({
+    items,
+    handleOpen,
+    handleDelete,
+    handleEdit,
+    handleChecked
+}: IShopList) => (
     <div className="mt-[35px] w-full">
         <div className="mx-[164px]">
             <div className="flex items-end justify-between mb-[11px]">
@@ -26,6 +34,8 @@ const ShopList = ({ items, handleOpen, handleDelete }: IShopList) => (
                 {items.map((item, key) => (
                     <ShopItem
                         handleDelete={handleDelete}
+                        handleEdit={handleEdit}
+                        handleChecked={handleChecked}
                         {...item}
                         key={key.toString()}
                     />
