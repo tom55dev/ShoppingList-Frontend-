@@ -1,10 +1,14 @@
 import { Button } from '@material-tailwind/react'
+import Header from '@components/Header'
 
 const Dashboard = () => {
     return (
-        <Button>
-            <div>Button</div>
-        </Button>
+        <div>
+            <Header />
+            <Button>
+                <div>Button</div>
+            </Button>
+        </div>
     )
 }
 

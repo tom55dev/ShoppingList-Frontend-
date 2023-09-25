@@ -8,7 +8,8 @@ module.exports = withMT({
     theme: {
         extend: {},
         fontFamily: {
-            sans: ['Nunito', 'sans-serif']
+            sans: ['Nunito', 'sans-serif'],
+            dosis: ['Dosis', 'sans-serif']
         }
     },
     plugins: []
