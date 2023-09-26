@@ -5,9 +5,9 @@ import ShopItem from './ShopItem'
 interface IShopList {
     items: IShopItem[]
     handleOpen: () => unknown
-    handleDelete: (id: number | string) => unknown
-    handleEdit: (id: number | string) => unknown
-    handleChecked: (id: number | string) => unknown
+    handleDelete: (id: number) => unknown
+    handleEdit: (id: number) => unknown
+    handleChecked: (id: number) => unknown
 }
 
 const ShopList = ({

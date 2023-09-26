@@ -5,33 +5,20 @@ import Empty from './Components/Empty'
 import ShopList from './Components/ShopList'
 import ActionDrawer from './Components/ActionDrawer'
 import ActionDialog from './Components/ActionDialog'
-import { useQuery } from '@tanstack/react-query'
-import { getAllShoppingList } from '@/utils/api'
+import { gql, useQuery } from '@apollo/client'
+import { Spinner } from '@material-tailwind/react'
+import { GET_ALL_ITEM } from '@/utils/api'
+import toast from 'react-hot-toast'
 
 const Dashboard = () => {
-    const [items, setItems] = useState<IShopItem[]>([
-        {
-            id: 1,
-            name: 'Potato',
-            desc: 'Potato is delicious.',
-            count: 1,
-            purchased: false
-        },
-        {
-            id: 2,
-            name: 'Tomato',
-            desc: 'Tomato is not delicious.',
-            count: 10,
-            purchased: true
-        }
-    ])
+    const [items, setItems] = useState<IShopItem[]>([])
     const [openModal, setOpenModal] = useState(false)
     const [openDrawer, setOpenDrawer] = useState(false)
     const [defaultValue, setDefaultValue] = useState<IShopItem>()
     const [isEdit, setIsEdit] = useState(false)
-    const [deleteId, setDeleteId] = useState<number | string>('')
+    const [deleteId, setDeleteId] = useState<number>(-1)
 
-    const handleModal = (id: number | string) => {
+    const handleModal = (id: number) => {
         setOpenModal(true)
         setDeleteId(id)
     }
@@ -40,14 +27,14 @@ const Dashboard = () => {
         console.log('delete: ', deleteId)
     }
 
-    const handleEdit = (id: number | string) => {
+    const handleEdit = (id: number) => {
         console.log('edit: ', id)
         setDefaultValue(items.find((el) => el.id === id))
         setIsEdit(true)
         setOpenDrawer(true)
     }
 
-    const handleChecked = (id: number | string) => {
+    const handleChecked = (id: number) => {
         setItems((el) => {
             return el.map((item) => {
                 if (item.id === id) {
@@ -59,30 +46,35 @@ const Dashboard = () => {
         })
     }
 
-    const { data } = useQuery(['fetchAll'], getAllShoppingList, {
-        select(data: any) {
-            console.log('data: ', data)
-            return data.data
-        },
-        onSuccess(data) {
-            console.log('success: ', data)
-        },
-        onError(error) {
-            console.log('error: ', error)
+    const { data, loading, error } = useQuery(GET_ALL_ITEM)
+
+    if (error) {
+        toast.error('Error occured.')
+        console.error('fetch error: ', error)
+    }
+
+    useEffect(() => {
+        if (!loading && !error) {
+            setItems(data.shoppingItems)
         }
-    })
+    }, [loading, error, data])
 
     return (
         <div className="flex flex-col items-center justify-center">
             <Header />
-            {items.length ? (
+            {loading ? (
+                <Spinner
+                    className="text-[#1871E8] w-16 h-16 mt-[124px]"
+                    color="white"
+                />
+            ) : items.length ? (
                 <ShopList
                     items={items}
                     handleOpen={() => {
                         setDefaultValue({
                             id: -1,
-                            name: '',
-                            desc: '',
+                            itemName: '',
+                            description: '',
                             count: 1,
                             purchased: false
                         }),

@@ -1,7 +1,7 @@
 export interface IShopItem {
-    id: string | number
-    name: string
-    desc: string
+    id: number
+    itemName: string
+    description: string
     count: number
     purchased: boolean
 }

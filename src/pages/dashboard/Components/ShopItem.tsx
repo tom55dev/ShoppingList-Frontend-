@@ -2,15 +2,15 @@ import { Badge, IconButton } from '@material-tailwind/react'
 import { IShopItem } from '@/utils/types'
 
 interface IProps extends IShopItem {
-    handleDelete: (id: number | string) => unknown
-    handleEdit: (id: number | string) => unknown
-    handleChecked: (id: number | string) => unknown
+    handleDelete: (id: number) => unknown
+    handleEdit: (id: number) => unknown
+    handleChecked: (id: number) => unknown
 }
 
 const ShopItem = ({
     id,
-    name,
-    desc,
+    itemName,
+    description,
     count,
     purchased,
     handleDelete,
@@ -38,7 +38,7 @@ const ShopItem = ({
                             purchased ? 'line-through text-[#4D81B7]' : ''
                         }`}
                     >
-                        {name}{' '}
+                        {itemName}{' '}
                         <Badge
                             className={`${
                                 count > 1 ? '' : 'hidden '
@@ -51,7 +51,7 @@ const ShopItem = ({
                             purchased ? 'line-through' : ''
                         }`}
                     >
-                        {desc}
+                        {description}
                     </div>
                 </div>
             </div>

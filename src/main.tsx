@@ -3,22 +3,30 @@ import './index.css'
 import App from './App'
 import ReactDOM from 'react-dom'
 import { ThemeProvider } from '@material-tailwind/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {
+    ApolloClient,
+    InMemoryCache,
+    ApolloProvider,
+    HttpLink
+} from '@apollo/client'
+import { API_URL } from './utils/api'
+import { Toaster } from 'react-hot-toast'
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 5 * 1000
-        }
-    }
+const client = new ApolloClient({
+    link: new HttpLink({
+        uri: API_URL,
+        fetchOptions: 'POST'
+    }),
+    cache: new InMemoryCache()
 })
 
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider>
-            <QueryClientProvider client={queryClient}>
+            <ApolloProvider client={client}>
                 <App />
-            </QueryClientProvider>
+                <Toaster />
+            </ApolloProvider>
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root') as HTMLElement

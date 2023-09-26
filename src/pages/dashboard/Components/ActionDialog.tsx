@@ -9,7 +9,7 @@ import {
 interface IActionDialog {
     isOpen: boolean
     handleDialog: React.Dispatch<React.SetStateAction<boolean>>
-    deleteId: number | string
+    deleteId: number
     handleDelete: (id: unknown) => unknown
 }
 
