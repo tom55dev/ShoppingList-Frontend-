@@ -7,7 +7,12 @@ import ActionDrawer from './Components/ActionDrawer'
 import ActionDialog from './Components/ActionDialog'
 import { useMutation, useQuery } from '@apollo/client'
 import { Spinner } from '@material-tailwind/react'
-import { ADD_A_ITEM, DELETE_ITEM, GET_ALL_ITEM } from '@/utils/api'
+import {
+    ADD_A_ITEM,
+    DELETE_ITEM,
+    GET_ALL_ITEM,
+    UPDATE_PURCHASE_STATUS
+} from '@/utils/api'
 import toast from 'react-hot-toast'
 
 const Dashboard = () => {
@@ -17,6 +22,7 @@ const Dashboard = () => {
     const [defaultValue, setDefaultValue] = useState<IShopItem>(initialValue)
     const [isEdit, setIsEdit] = useState(false)
     const [deleteId, setDeleteId] = useState<number>(-1)
+    const [checkId, setCheckId] = useState<number>(-1)
 
     const handleModal = (id: number) => {
         setOpenModal(true)
@@ -35,14 +41,14 @@ const Dashboard = () => {
     }
 
     const handleChecked = (id: number) => {
-        setItems((el) => {
-            return el.map((item) => {
-                if (item.id === id) {
-                    return { ...item, purchased: !item.purchased }
-                } else {
-                    return item
-                }
-            })
+        setCheckId(id)
+        const found = items.find((el) => el.id === id)
+        if (!found) return
+        updatePurchasedStatus({
+            variables: {
+                id: id,
+                purchased: !found.purchased
+            }
         })
     }
 
@@ -86,8 +92,12 @@ const Dashboard = () => {
         deleteShoppingItem,
         { data: delete_data, loading: delete_loading, error: delete_error }
     ] = useMutation(DELETE_ITEM)
+    const [
+        updatePurchasedStatus,
+        { data: status_data, loading: status_loading, error: status_error }
+    ] = useMutation(UPDATE_PURCHASE_STATUS)
 
-    if (error || add_error || delete_error) {
+    if (error || add_error || delete_error || status_error) {
         toast.error('Error occured.')
     }
 
@@ -118,6 +128,25 @@ const Dashboard = () => {
             }
         }
     }, [delete_loading, delete_error, delete_data])
+
+    useEffect(() => {
+        if (!status_loading && !status_error && status_data) {
+            if (status_data.updatePurchasedStatus) {
+                setItems((el) => {
+                    return el.map((item) => {
+                        if (item.id === checkId) {
+                            return { ...item, purchased: !item.purchased }
+                        } else {
+                            return item
+                        }
+                    })
+                })
+                toast.success('Successfully updated.')
+            } else {
+                toast.error('Delete failed.')
+            }
+        }
+    }, [status_loading, status_error, status_data])
 
     return (
         <div className="flex flex-col items-center justify-center">

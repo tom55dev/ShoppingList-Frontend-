@@ -39,3 +39,9 @@ export const DELETE_ITEM = gql`
         deleteShoppingItem(id: $id)
     }
 `
+
+export const UPDATE_PURCHASE_STATUS = gql`
+    mutation UpdatePurchasedStatus($id: Int!, $purchased: Boolean!) {
+        updatePurchasedStatus(id: $id, purchased: $purchased)
+    }
+`
