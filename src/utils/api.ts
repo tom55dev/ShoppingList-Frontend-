@@ -13,3 +13,23 @@ export const GET_ALL_ITEM = gql`
         }
     }
 `
+
+export const ADD_A_ITEM = gql`
+    mutation AddShoppingItem(
+        $itemName: String!
+        $description: String!
+        $count: Int!
+    ) {
+        addShoppingItem(
+            itemName: $itemName
+            description: $description
+            count: $count
+        ) {
+            id
+            itemName
+            description
+            count
+            purchased
+        }
+    }
+`

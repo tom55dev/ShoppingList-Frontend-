@@ -1,3 +1,4 @@
+import { IShopItem } from '@/utils/types'
 import {
     Button,
     Drawer,
@@ -11,25 +12,32 @@ import { useEffect, useState } from 'react'
 interface IActionDrawer {
     isEdit?: boolean
     isOpen: boolean
+    defaultValue: IShopItem
     handleClose: () => unknown
-    name?: string
-    desc?: string
-    count?: number
-    purchased?: boolean
-    handleAction?: (arg0: unknown) => unknown
+    handleAction: ({
+        id,
+        itemName,
+        description,
+        count,
+        purchased
+    }: IShopItem) => void
 }
 
 const ActionDrawer = ({
     isEdit = false,
     isOpen,
+    defaultValue,
     handleClose,
-    name,
-    desc,
-    count,
-    purchased
+    handleAction
 }: IActionDrawer) => {
     const [isChecked, setChecked] = useState<boolean>()
-    useEffect(() => setChecked(!!purchased), [purchased])
+    useEffect(
+        () => setChecked(!!defaultValue.purchased),
+        [defaultValue.purchased]
+    )
+    const [itemName, setItemName] = useState(defaultValue.itemName)
+    const [description, setDescription] = useState(defaultValue.description)
+    const [count, setCount] = useState<number>(defaultValue.count)
 
     return (
         <Drawer
@@ -78,17 +86,23 @@ const ActionDrawer = ({
                                 : 'Add your new item below'}
                         </Typography>
                     </div>
-                    <Input label="Item Name" defaultValue={name} />
+                    <Input
+                        label="Item Name"
+                        value={itemName}
+                        onChange={(e) => setItemName(e.target.value)}
+                    />
                     <Textarea
                         label="Description"
                         maxLength={100}
-                        defaultValue={desc}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
                     <Input
                         label="How many?"
                         type="number"
                         min={1}
-                        defaultValue={count}
+                        value={count}
+                        onChange={(e) => setCount(parseInt(e.target.value))}
                     />
                     {isEdit && (
                         <span className="text-[#9CA8B4] flex gap-[13px]">
@@ -109,7 +123,18 @@ const ActionDrawer = ({
                     >
                         Cancel
                     </Button>
-                    <Button className="bg-[#1871E8] text-white capitalize">
+                    <Button
+                        className="bg-[#1871E8] text-white capitalize"
+                        onClick={() =>
+                            handleAction({
+                                id: defaultValue.id,
+                                itemName,
+                                description,
+                                count,
+                                purchased: !!isChecked
+                            })
+                        }
+                    >
                         {isEdit ? 'Save Item' : 'Add Item'}
                     </Button>
                 </div>

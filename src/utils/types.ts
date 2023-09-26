@@ -5,3 +5,11 @@ export interface IShopItem {
     count: number
     purchased: boolean
 }
+
+export const initialValue = {
+    id: -1,
+    itemName: '',
+    description: '',
+    count: 1,
+    purchased: false
+}
