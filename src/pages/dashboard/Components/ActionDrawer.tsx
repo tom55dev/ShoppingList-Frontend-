@@ -1,4 +1,6 @@
+import { GET_ITEM_BY_ID } from '@/utils/api'
 import { IShopItem } from '@/utils/types'
+import { useQuery } from '@apollo/client'
 import {
     Button,
     Drawer,
@@ -38,6 +40,21 @@ const ActionDrawer = ({
     const [itemName, setItemName] = useState(defaultValue.itemName)
     const [description, setDescription] = useState(defaultValue.description)
     const [count, setCount] = useState<number>(defaultValue.count)
+
+    const { data, loading, error } = useQuery(GET_ITEM_BY_ID, {
+        variables: { id: defaultValue.id }
+    })
+
+    useEffect(() => {
+        if (!isEdit) return
+        if (!loading && !error && data) {
+            const shoppingItem = data.shoppingItem
+            setItemName(shoppingItem.itemName)
+            setDescription(shoppingItem.description)
+            setCount(shoppingItem.count)
+            setChecked(shoppingItem.purchased)
+        }
+    }, [loading, error, data, isOpen])
 
     return (
         <Drawer
@@ -134,6 +151,7 @@ const ActionDrawer = ({
                                 purchased: !!isChecked
                             })
                         }
+                        disabled={!itemName || !description}
                     >
                         {isEdit ? 'Save Item' : 'Add Item'}
                     </Button>

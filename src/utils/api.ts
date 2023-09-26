@@ -14,6 +14,18 @@ export const GET_ALL_ITEM = gql`
     }
 `
 
+export const GET_ITEM_BY_ID = gql`
+    query ShoppingItem($id: Int!) {
+        shoppingItem(id: $id) {
+            id
+            itemName
+            description
+            count
+            purchased
+        }
+    }
+`
+
 export const ADD_A_ITEM = gql`
     mutation AddShoppingItem(
         $itemName: String!
@@ -43,5 +55,23 @@ export const DELETE_ITEM = gql`
 export const UPDATE_PURCHASE_STATUS = gql`
     mutation UpdatePurchasedStatus($id: Int!, $purchased: Boolean!) {
         updatePurchasedStatus(id: $id, purchased: $purchased)
+    }
+`
+
+export const UPDATE_ITEM = gql`
+    mutation UpdateShoppingItem(
+        $id: Int!
+        $itemName: String!
+        $description: String!
+        $count: Int!
+        $purchased: Boolean!
+    ) {
+        updateShoppingItem(
+            id: $id
+            itemName: $itemName
+            description: $description
+            count: $count
+            purchased: $purchased
+        )
     }
 `

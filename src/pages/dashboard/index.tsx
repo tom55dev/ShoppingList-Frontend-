@@ -11,6 +11,7 @@ import {
     ADD_A_ITEM,
     DELETE_ITEM,
     GET_ALL_ITEM,
+    UPDATE_ITEM,
     UPDATE_PURCHASE_STATUS
 } from '@/utils/api'
 import toast from 'react-hot-toast'
@@ -23,6 +24,7 @@ const Dashboard = () => {
     const [isEdit, setIsEdit] = useState(false)
     const [deleteId, setDeleteId] = useState<number>(-1)
     const [checkId, setCheckId] = useState<number>(-1)
+    const [updatedValue, setUpdatedValue] = useState<IShopItem>(initialValue)
 
     const handleModal = (id: number) => {
         setOpenModal(true)
@@ -59,20 +61,21 @@ const Dashboard = () => {
         count,
         purchased
     }: IShopItem) => {
-        console.log(
-            'action: ',
-            isEdit,
-            'value: ',
-            id,
-            itemName,
-            description,
-            count,
-            purchased
-        )
-
         if (isEdit) {
             //edit action
+            const updated = {
+                id: id,
+                itemName: itemName,
+                description: description,
+                count: count,
+                purchased: purchased
+            }
+            setUpdatedValue(updated)
+            updateShoppingItem({
+                variables: updated
+            })
         } else {
+            //add action
             addShoppingItem({
                 variables: {
                     itemName: itemName,
@@ -97,7 +100,12 @@ const Dashboard = () => {
         { data: status_data, loading: status_loading, error: status_error }
     ] = useMutation(UPDATE_PURCHASE_STATUS)
 
-    if (error || add_error || delete_error || status_error) {
+    const [
+        updateShoppingItem,
+        { data: update_data, loading: update_loading, error: update_error }
+    ] = useMutation(UPDATE_ITEM)
+
+    if (error || add_error || delete_error || status_error || update_error) {
         toast.error('Error occured.')
     }
 
@@ -110,7 +118,6 @@ const Dashboard = () => {
     useEffect(() => {
         if (!loading && !error && add_data) {
             const itemsCopy = [...items]
-            console.log('add: ', add_data)
             itemsCopy.push(add_data.addShoppingItem)
             setItems(itemsCopy)
             toast.success('Successfully added.')
@@ -147,6 +154,23 @@ const Dashboard = () => {
             }
         }
     }, [status_loading, status_error, status_data])
+
+    useEffect(() => {
+        if (!update_loading && !update_error && update_data) {
+            if (update_data.updateShoppingItem) {
+                setOpenDrawer(false)
+                setItems(
+                    items.map((el) => {
+                        if (el.id === updatedValue.id) return updatedValue
+                        else return el
+                    })
+                )
+                toast.success('Successfully updated.')
+            } else {
+                toast.error('Delete failed.')
+            }
+        }
+    }, [update_loading, update_error, update_data])
 
     return (
         <div className="flex flex-col items-center justify-center">
