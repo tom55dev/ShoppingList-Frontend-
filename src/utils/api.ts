@@ -33,3 +33,9 @@ export const ADD_A_ITEM = gql`
         }
     }
 `
+
+export const DELETE_ITEM = gql`
+    mutation DeleteShoppingItem($id: Int!) {
+        deleteShoppingItem(id: $id)
+    }
+`

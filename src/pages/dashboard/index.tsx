@@ -7,7 +7,7 @@ import ActionDrawer from './Components/ActionDrawer'
 import ActionDialog from './Components/ActionDialog'
 import { useMutation, useQuery } from '@apollo/client'
 import { Spinner } from '@material-tailwind/react'
-import { ADD_A_ITEM, GET_ALL_ITEM } from '@/utils/api'
+import { ADD_A_ITEM, DELETE_ITEM, GET_ALL_ITEM } from '@/utils/api'
 import toast from 'react-hot-toast'
 
 const Dashboard = () => {
@@ -24,7 +24,7 @@ const Dashboard = () => {
     }
 
     const handleDelete = () => {
-        console.log('delete: ', deleteId)
+        deleteShoppingItem({ variables: { id: deleteId } })
     }
 
     const handleEdit = (id: number) => {
@@ -82,13 +82,17 @@ const Dashboard = () => {
         addShoppingItem,
         { data: add_data, loading: add_loading, error: add_error }
     ] = useMutation(ADD_A_ITEM)
+    const [
+        deleteShoppingItem,
+        { data: delete_data, loading: delete_loading, error: delete_error }
+    ] = useMutation(DELETE_ITEM)
 
-    if (error || add_error) {
+    if (error || add_error || delete_error) {
         toast.error('Error occured.')
     }
 
     useEffect(() => {
-        if (!loading && !error) {
+        if (!loading && !error && data) {
             setItems(data.shoppingItems)
         }
     }, [loading, error, data])
@@ -103,6 +107,17 @@ const Dashboard = () => {
             setOpenDrawer(false)
         }
     }, [add_loading, add_error, add_data])
+
+    useEffect(() => {
+        if (!delete_loading && !delete_error && delete_data) {
+            if (delete_data.deleteShoppingItem) {
+                setItems(items.filter((el) => el.id !== deleteId))
+                toast.success('Successfully deleted.')
+            } else {
+                toast.error('Delete failed.')
+            }
+        }
+    }, [delete_loading, delete_error, delete_data])
 
     return (
         <div className="flex flex-col items-center justify-center">
