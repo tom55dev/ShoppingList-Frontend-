@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '@components/Header'
 import { IShopItem } from '@/utils/types'
 import Empty from './Components/Empty'
 import ShopList from './Components/ShopList'
 import ActionDrawer from './Components/ActionDrawer'
 import ActionDialog from './Components/ActionDialog'
+import { useQuery } from '@tanstack/react-query'
+import { getAllShoppingList } from '@/utils/api'
 
 const Dashboard = () => {
     const [items, setItems] = useState<IShopItem[]>([
@@ -56,6 +58,19 @@ const Dashboard = () => {
             })
         })
     }
+
+    const { data } = useQuery(['fetchAll'], getAllShoppingList, {
+        select(data: any) {
+            console.log('data: ', data)
+            return data.data
+        },
+        onSuccess(data) {
+            console.log('success: ', data)
+        },
+        onError(error) {
+            console.log('error: ', error)
+        }
+    })
 
     return (
         <div className="flex flex-col items-center justify-center">
