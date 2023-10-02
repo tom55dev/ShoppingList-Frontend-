@@ -28,7 +28,7 @@ const ShopItem = ({
             <div className="flex gap-[18px] items-center">
                 <input
                     className="w-6 h-6 cursor-pointer"
-                    defaultChecked={purchased}
+                    checked={purchased}
                     type="checkbox"
                     onChange={() => handleChecked(id)}
                 />

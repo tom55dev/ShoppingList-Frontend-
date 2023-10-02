@@ -52,7 +52,7 @@ const ActionDrawer = ({
             setItemName(shoppingItem.itemName)
             setDescription(shoppingItem.description)
             setCount(shoppingItem.count)
-            setChecked(shoppingItem.purchased)
+            setChecked(!!defaultValue.purchased)
         }
     }, [loading, error, data, isOpen])
 
